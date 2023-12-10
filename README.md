@@ -15,6 +15,12 @@ This is the simple implemention of crud operations api's for a Todo application
 - Generate Token for generating token jwt token to encode login credentials
 - After success login token will be generated which is passed as a header in todos api
 
+## API Flow
+- Register New User using ==register-user==
+- Generate Token using ==generate-token== 
+- Login through ==login==
+- Take token form successful loging response
+- Pass login token in each of the todo api in header
 
 ## Documentation
 

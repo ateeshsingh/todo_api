@@ -11,9 +11,9 @@ def mail_sender(receiver_mail, task_name):
     smtp_username = 'ateeshchauhan4023@gmail.com'
     smtp_password = 'hdao kbqx oqay jxkk'
     from_email = 'ateeshchauhan4023@gmail.com'
-    to_email = receiver_mail  # 'ateesh.chauhan@flynava.ai'
-    subject = 'Hello, world!'
-    body = 'This is a test email.'
+    to_email = receiver_mail
+    subject = 'Task Reminder !!'
+    body = f'This is a reminder email. for completing the {task_name}'
     message = f'Subject: {subject}\n\n{body}'
     with smtplib.SMTP(smtp_server, smtp_port) as smtp:
         smtp.starttls()
@@ -22,12 +22,13 @@ def mail_sender(receiver_mail, task_name):
     print("mail_sent")
 
 
-@repeat(every(10).seconds)
+@repeat(every(15).minutes)
 def email_schedule():
-    todo_app.db.get_collection("Todos").find({})
-    mail_sender(receiver_mail="ateesh.chauhan@flynava.ai", task_name="")
+    records = todo_app.db.get_collection("Todos").find({})
+    for rec in records:
+        mail_sender(receiver_mail=rec.get("email"), task_name=rec.get("name"))
 
 
 while True:
     schedule.run_pending()
-    time.sleep(1)
+    time.sleep(secs=120)
