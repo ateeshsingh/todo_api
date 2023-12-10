@@ -17,9 +17,10 @@ class Login:
 
     def user_login(self, token: str):
         login = UserCheck(mongo_queries=self.mongo_queries)
+        login_token=login.check_login(token=token)
         if login.response_code==0:
             raise HTTPException(status_code=400, detail={"response":login.response})
-        return login.check_login(token=token)
+        return login_token
 
     def register_users(self, user: Users):
         user_register = UserCheck(mongo_queries=self.mongo_queries)
