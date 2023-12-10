@@ -27,7 +27,12 @@ class UserCheck:
 
     def user_registration(self, user):
         if self.mongo_queries.filter(email=user.email):
-            return
+            self.response_code=0
+            self.response="User already Exists"
+            return self.response
         password_hasher = PasswordHasher()
         user.password = password_hasher.hash(user.password)
-        return self.mongo_queries.save(user)
+        self.mongo_queries.save(data=user)
+        self.response_code=200
+        self.response="success"
+        return self.response

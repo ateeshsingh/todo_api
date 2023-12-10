@@ -9,7 +9,7 @@ from datetime import datetime
 class DatabaseFunctions(ABC):
 
     @abstractmethod
-    def save(self, data): ...
+    def save(self, data,**kwargs): ...
 
     @abstractmethod
     def delete_by_id(self, record_id): ...
@@ -18,7 +18,7 @@ class DatabaseFunctions(ABC):
     def filter(self, *args, **kwargs): ...
 
     @abstractmethod
-    def fetch(self): ...
+    def fetch(self,*args, **kwargs): ...
 
     @abstractmethod
     def update(self, data, record_id): ...
@@ -29,11 +29,11 @@ class MongoQueries(DatabaseFunctions):
         self.database = todo_app.db
         self.collection_name = collection_name
 
-    def save(self, data):
+    def save(self, data,**kwargs):
         data.created_at = datetime.now()
         data.modified_at = datetime.now()
         data = data.dict(exclude_none=True)
-        record_id = self.database.get_collection(self.collection_name).update_one({"name":data.get("name")}, {"$set":data}, upsert=True).modified_count
+        record_id = self.database.get_collection(self.collection_name).update_one(kwargs, {"$set":data}, upsert=True).modified_count
         return record_id
 
     def delete_by_id(self, record_id):
@@ -47,8 +47,8 @@ class MongoQueries(DatabaseFunctions):
     def filter(self, *args, **kwargs):
         return self.database.get_collection(self.collection_name).find_one(kwargs) or {}
 
-    def fetch(self):
-        data = self.database.get_collection(self.collection_name).find({})
+    def fetch(self,*args, **kwargs):
+        data = self.database.get_collection(self.collection_name).find(kwargs)
         return data
 
     def update(self, data, record_id):

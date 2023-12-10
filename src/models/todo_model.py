@@ -10,7 +10,7 @@ class TodosCreate(BaseModel):
     deadline: datetime
     created_at: Optional[datetime] = None
     modified_at: Optional[datetime] = None
-
+    email:Optional[str] = None
 
 class TodosUpdate(BaseModel):
     model_config = {
@@ -22,6 +22,7 @@ class TodosUpdate(BaseModel):
     deadline: Optional[datetime] = None
     created_at: Optional[datetime] = None
     modified_at: Optional[datetime] = None
+    email: Optional[str] = None
 
     @field_serializer('id')
     def serialize_dt(self, id: Any, _info):
