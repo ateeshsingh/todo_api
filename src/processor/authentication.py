@@ -16,11 +16,12 @@ class UserCheck:
         user_record = self.mongo_queries.filter(email=decode_data.get("email"))
         if not user_record:
             self.response = "Invalid Email"
+            return self.response
         try:
             if PasswordHasher().verify(user_record.get("password"), decode_data.get("password")):
                 self.response = jwt_enc.encode_token(data=decode_data.get("email"), exp_time=30)
                 self.response_code=200
-        except (InvalidHash, VerifyMismatchError):
+        except (InvalidHash, VerifyMismatchError,AttributeError):
             self.response = "Invalid Password"
         return self.response
 
