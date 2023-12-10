@@ -1,3 +1,5 @@
+import datetime
+
 from src.settings.app import todo_app
 import smtplib
 import time
@@ -22,13 +24,18 @@ def mail_sender(receiver_mail, task_name):
     print("mail_sent")
 
 
-@repeat(every(15).minutes)
+@repeat(every(59).minutes)
 def email_schedule():
-    records = todo_app.db.get_collection("Todos").find({})
+    records = todo_app.db.get_collection("Todos").find(
+                {"deadline": {"$lte": datetime.datetime.now() + datetime.timedelta(minutes=59),
+                              "$gte": datetime.datetime.now()}},
+
+    )
+    records = list(records)
     for rec in records:
         mail_sender(receiver_mail=rec.get("email"), task_name=rec.get("name"))
 
 
 while True:
     schedule.run_pending()
-    time.sleep(secs=120)
+    time.sleep(1)

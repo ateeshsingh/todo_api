@@ -70,3 +70,17 @@ async def test_delete_todo():
                                    params={"todo_id": "65753b4076d1d2f58c32a972"}
                                    )
     assert response.status_code == 200
+
+
+# test for hitting todos api's without proper token
+dummy_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" \
+            ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ" \
+            ".SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+@pytest.mark.anyio
+async def test_hit_todo_without_header():
+    async with AsyncClient(app=app, base_url=BASE_URL) as ac:
+        response = await ac.delete(url="/api/v1/delete-todos",
+                                   headers={"header": dummy_token},
+                                   params={"todo_id": "65753b4076d1d2f58c32a972"}
+                                   )
+    assert response.status_code == 401

@@ -18,6 +18,7 @@ async def test_user_registration():
                                  }
                                  )
     assert response.status_code == 200
+    assert response.status_code==403
 
 
 @pytest.mark.anyio
@@ -32,3 +33,22 @@ async def test_login():
             params={"token": token.json()}
         )
     assert response.status_code == 200
+
+
+# Invalid credentials test
+
+@pytest.mark.anyio
+async def test_login_invalid():
+    async with AsyncClient(app=app, base_url=BASE_URL) as ac:
+        token = await ac.post(url="/api/v1/get-token", json={
+            "email": "rk123@test.com",
+            "password": "test"
+        })
+        response = await ac.get(
+            url="/api/v1/login",
+            params={"token": token.json()}
+        )
+    assert response.status_code == 400
+    assert response.json().get("detail").get("response")=="Invalid Email"
+
+

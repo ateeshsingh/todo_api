@@ -22,10 +22,9 @@ class Todo:
 
     def verify_auth(self, header=Header("Authorization")):
         encrypt = JwtEncryption()
-        try:
-            header_token = encrypt.decode_token(header)
-            self.email = header_token.get("token")
-        except Exception:
+        header_token = encrypt.decode_token(header)
+        self.email = header_token.get("token")
+        if not header_token:
             raise HTTPException(status_code=401, detail={"response": "UnAuthorized"})
 
     async def create_todo(self, todo: TodosCreate = Body(..., example=todos_request_body_example)):
