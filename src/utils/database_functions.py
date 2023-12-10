@@ -33,7 +33,7 @@ class MongoQueries(DatabaseFunctions):
         data.created_at = datetime.now()
         data.modified_at = datetime.now()
         data = data.dict(exclude_none=True)
-        record_id = self.database.get_collection(self.collection_name).update_one({"name":data.get("name")}, {"$set":data}, upsert=True)
+        record_id = self.database.get_collection(self.collection_name).update_one({"name":data.get("name")}, {"$set":data}, upsert=True).modified_count
         return record_id
 
     def delete_by_id(self, record_id):
